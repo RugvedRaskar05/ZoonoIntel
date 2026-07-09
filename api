@@ -1,7 +1,0 @@
-ZoonoIntel/
-    app.py
-    ZoonoIntel.csv
-    requirements.txt
-    api/
-        index.py
-    vercel.json

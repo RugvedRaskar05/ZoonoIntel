@@ -1,10 +1,10 @@
-from google.colab import files
-uploaded = files.upload()
+import pandas as pd
+import plotly.graph_objects as go
+import gradio as gr
 
-file_name = list(uploaded.keys())[0]
-df = pd.read_csv(file_name)
 
-df.head()
+df = pd.read_csv("ZoonoIntel - Final App Data.csv")
+
 
 driver_name_map = {
     "geographic_range_area_km2": "Geographic Range (Km²)",
@@ -213,8 +213,9 @@ button:hover {
 }
 """
 
-with gr.Blocks(title="ZoonoIntel") as app:
+app = gr.Blocks(css=custom_css)
 
+with app:
     gr.HTML("""
     <div style="text-align:center; margin-bottom: 25px;">
         <img class="banner-img" src="https://i.imgur.com/H6mWX4Z.png"
@@ -222,6 +223,7 @@ with gr.Blocks(title="ZoonoIntel") as app:
         <div class="neon-divider"></div>
     </div>
     """)
+
 
     search_input = gr.Textbox(
         label="Search species name",
@@ -263,5 +265,4 @@ with gr.Blocks(title="ZoonoIntel") as app:
     )
 
 
-
-app.launch(share=True, css=custom_css)
+app.launch(server_name="0.0.0.0", server_port=10000)

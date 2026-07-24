@@ -31,7 +31,7 @@ def create_gauge(score):
             "font": {"color": "white", "size": 36}
         },
         title={
-            "text": "<b>ZoonoIntel Score</b>",
+            "text": "<b>ZoonoIntel Sentinel Score</b>",
             "font": {"color": "#00AEEF", "size": 24}  # Blue title
         },
         gauge={
@@ -95,7 +95,7 @@ def search_species(query):
     score = row["zoonointel_score"]
     gauge = create_gauge(score)
 
-    name_md = f"## {row['species_name']} ({row.get('common_Name', 'No common name')})"
+    name_md = f"## {row.get('common_Name', 'No common name')} ({row['species_name']})"
 
     d1 = driver_name_map.get(row.get("top_driver_1", ""), row.get("top_driver_1", ""))
     d2 = driver_name_map.get(row.get("top_driver_2", ""), row.get("top_driver_2", ""))
@@ -108,9 +108,9 @@ def search_species(query):
 
 ----
 
-## **ZoonoIntel Prediction**
-**Score:** {score} / 100
-**Risk Tier:** {row['risk_tier']}
+## **ZoonoIntel Resevoir Potential Prediction**
+**Sentinel Score:** {score} / 100 <br>
+**Sentinel Tier:** {row['risk_tier']}
 
 ----
 

@@ -134,7 +134,6 @@ custom_css = """
     --primary-color: #00AEEF;
     --secondary-color: #FF7A00;
     --accent-color: #00C853;
-    --background-color: #0A1A2F;
     --text-color: #FFFFFF;
     --font-family: 'Orbitron', sans-serif;
 }
@@ -144,11 +143,19 @@ custom_css = """
     font-family: var(--font-family) !important;
 }
 
-/* Background + fade-in */
+/* MATCH APP BACKGROUND TO WEBSITE BACKGROUND */
 .gradio-container {
-    background: linear-gradient(135deg, #0A1A2F 0%, #0F2A45 40%, #0A1A2F 100%) !important;
+    background: linear-gradient(120deg, #00111f, #002b45, #003b5c, #001f33) !important;
+    background-size: 400% 400% !important;
+    animation: nebulaShift 18s ease infinite !important;
     color: var(--text-color) !important;
     animation: fadeIn 1.2s ease-in-out;
+}
+
+@keyframes nebulaShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 @keyframes fadeIn {
@@ -212,6 +219,7 @@ button:hover {
     transform: translateY(-3px) !important;
 }
 """
+
 
 app = gr.Blocks(css=custom_css)
 

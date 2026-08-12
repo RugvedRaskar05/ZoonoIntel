@@ -143,24 +143,24 @@ custom_css = """
     font-family: var(--font-family) !important;
 }
 
-/* FLOATING PARTICLE BACKGROUND (MATCHES WEBSITE) */
+/* MATCH WEBSITE BACKGROUND — TRANSPARENT + FLOATING PARTICLES */
 .gradio-container {
     background-color: transparent !important;
     position: relative;
+    overflow: hidden;
     color: var(--text-color) !important;
     animation: fadeIn 1.2s ease-in-out;
 }
 
 /* Particle wrapper */
-.gradio-container::before {
-    content: "";
+.particles {
     position: fixed;
     inset: 0;
     z-index: -3;
-    background: transparent;
+    overflow: hidden;
 }
 
-/* Generate particles */
+/* Individual particle */
 .particle {
     position: absolute;
     width: 3px;
@@ -175,6 +175,7 @@ custom_css = """
     from { transform: translateY(0); opacity: 1; }
     to { transform: translateY(-200px); opacity: 0; }
 }
+
 
 /* Fade-in */
 @keyframes fadeIn {
@@ -242,6 +243,20 @@ button:hover {
 
 
 app = gr.Blocks(css=custom_css)
+
+# Floating particle background (matches website)
+gr.HTML(
+    """
+    <div class="particles">
+    """ +
+    "\n".join([
+        f'<div class="particle" style="left:{i*3}%; top:{(i*7)%100}%;"></div>'
+        for i in range(60)
+    ]) +
+    """
+    </div>
+    """
+)
 
 with app:
     gr.HTML("""

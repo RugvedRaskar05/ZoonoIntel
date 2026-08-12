@@ -143,21 +143,40 @@ custom_css = """
     font-family: var(--font-family) !important;
 }
 
-/* MATCH APP BACKGROUND TO WEBSITE BACKGROUND */
+/* FLOATING PARTICLE BACKGROUND (MATCHES WEBSITE) */
 .gradio-container {
-    background: linear-gradient(120deg, #00111f, #002b45, #003b5c, #001f33) !important;
-    background-size: 400% 400% !important;
-    animation: nebulaShift 18s ease infinite !important;
+    background-color: transparent !important;
+    position: relative;
     color: var(--text-color) !important;
     animation: fadeIn 1.2s ease-in-out;
 }
 
-@keyframes nebulaShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* Particle wrapper */
+.gradio-container::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -3;
+    background: transparent;
 }
 
+/* Generate particles */
+.particle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: rgba(0, 174, 239, 0.8);
+    border-radius: 50%;
+    animation: float 12s linear infinite;
+}
+
+/* Floating animation */
+@keyframes float {
+    from { transform: translateY(0); opacity: 1; }
+    to { transform: translateY(-200px); opacity: 0; }
+}
+
+/* Fade-in */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
@@ -218,6 +237,7 @@ button:hover {
     border-color: var(--primary-color) !important;
     transform: translateY(-3px) !important;
 }
+
 """
 
 
@@ -231,6 +251,15 @@ with app:
         <div class="neon-divider"></div>
     </div>
     """)
+
+    gr.HTML("""
+<div class="particles">
+  """ + 
+  "\n".join([f'<div class="particle" style="left:{i*5}%; top:{i*3}%;"></div>' for i in range(40)]) +
+  """
+</div>
+""")
+
 
 
     search_input = gr.Textbox(

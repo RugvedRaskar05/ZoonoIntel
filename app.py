@@ -143,24 +143,32 @@ custom_css = """
     font-family: var(--font-family) !important;
 }
 
-/* MATCH WEBSITE BACKGROUND — TRANSPARENT + FLOATING PARTICLES */
+/* MATCH WEBSITE BACKGROUND */
 .gradio-container {
-    background-color: transparent !important;
+    background: linear-gradient(120deg, #00111f, #002b45, #003b5c, #001f33) !important;
+    background-size: 400% 400% !important;
+    animation: nebulaShift 18s ease infinite !important;
+    color: var(--text-color) !important;
     position: relative;
     overflow: hidden;
-    color: var(--text-color) !important;
-    animation: fadeIn 1.2s ease-in-out;
 }
 
-/* Particle wrapper */
+/* Animated background shift */
+@keyframes nebulaShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* PARTICLE LAYER */
 .particles {
     position: fixed;
     inset: 0;
-    z-index: -3;
+    z-index: -2;
     overflow: hidden;
+    pointer-events: none;
 }
 
-/* Individual particle */
 .particle {
     position: absolute;
     width: 3px;
@@ -170,12 +178,11 @@ custom_css = """
     animation: float 12s linear infinite;
 }
 
-/* Floating animation */
+/* Particle animation */
 @keyframes float {
     from { transform: translateY(0); opacity: 1; }
     to { transform: translateY(-200px); opacity: 0; }
 }
-
 
 /* Fade-in */
 @keyframes fadeIn {
@@ -238,27 +245,28 @@ button:hover {
     border-color: var(--primary-color) !important;
     transform: translateY(-3px) !important;
 }
-
 """
 
 
 app = gr.Blocks(css=custom_css)
 
-# Floating particle background (matches website)
-gr.HTML(
-    """
-    <div class="particles">
-    """ +
-    "\n".join([
-        f'<div class="particle" style="left:{i*3}%; top:{(i*7)%100}%;"></div>'
-        for i in range(60)
-    ]) +
-    """
-    </div>
-    """
-)
-
 with app:
+
+    # PARTICLE BACKGROUND (must be first)
+    gr.HTML(
+        """
+        <div class="particles">
+        """ +
+        "\n".join([
+            f'<div class="particle" style="left:{__import__("random").randint(0,100)}%; top:{__import__("random").randint(0,100)}%; animation-delay:{__import__("random").uniform(0,12)}s;"></div>'
+            for _ in range(300)
+        ]) +
+        """
+        </div>
+        """
+    )
+
+    # BANNER (only once)
     gr.HTML("""
     <div style="text-align:center; margin-bottom: 25px;">
         <img class="banner-img" src="https://i.imgur.com/H6mWX4Z.png"
@@ -266,14 +274,6 @@ with app:
         <div class="neon-divider"></div>
     </div>
     """)
-
-    gr.HTML("""
-<div class="particles">
-  """ + 
-  "\n".join([f'<div class="particle" style="left:{i*5}%; top:{i*3}%;"></div>' for i in range(40)]) +
-  """
-</div>
-""")
 
 
 

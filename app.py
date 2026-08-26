@@ -131,6 +131,7 @@ custom_css = """
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@300;400;500;700&display=swap');
 
 :root {
+    color-scheme: dark !important;
     --primary-color: #00AEEF;
     --secondary-color: #FF7A00;
     --accent-color: #00C853;

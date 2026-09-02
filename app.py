@@ -102,7 +102,7 @@ def search_species(query):
     d3 = driver_name_map.get(row.get("top_driver_3", ""), row.get("top_driver_3", ""))
 
     report = f"""
-### Taxonomy
+## **Taxonomy**
 **Order:** {row['order']}<br>
 **Family:** {row['family']}
 

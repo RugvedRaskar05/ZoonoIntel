@@ -335,7 +335,7 @@ species_dropdown.change(
     outputs=[name_output, gauge_output, gauge_group, report_output]
 )
 
-    name_output = gr.Markdown()
+name_output = gr.Markdown()
 
     gauge_group = gr.Group(visible=False)
     with gauge_group:

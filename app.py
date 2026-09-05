@@ -70,12 +70,6 @@ def create_gauge(score):
 
     return fig
 
-def search_species(query):
-    if not query:
-        return gr.update(choices=[], value=None, visible=False), "", None, gr.update(visible=False), "Type a species name."
-
-    q = query.strip().lower()
-
     # Find ALL partial matches
     matches = df[
         df["species_name"].str.lower().str.contains(q, na=False)
@@ -313,13 +307,6 @@ with app:
         gauge_output = gr.Plot()
 
     report_output = gr.Markdown()
-
-    # SEARCH HANDLERS
-    search_input.change(
-        fn=search_species,
-        inputs=search_input,
-        outputs=[species_dropdown, name_output, gauge_output, gauge_group, report_output]
-    )
 
     species_dropdown.change(
         fn=load_species,

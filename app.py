@@ -72,30 +72,46 @@ def create_gauge(score):
 
 def search_species(query):
     if not query:
-        return "", None, gr.update(visible=False), "Type a species name or common name to search."
+        return gr.update(choices=[], value=None, visible=False), "", None, gr.update(visible=False), "Type a species name."
 
-    q = query.strip()
+    q = query.strip().lower()
 
-    exact_common = df[df["common_Name"].str.lower() == q.lower()]
-    if not exact_common.empty:
-        row = exact_common.iloc[0]
-    else:
-        exact_scientific = df[df["species_name"].str.lower() == q.lower()]
-        if not exact_scientific.empty:
-            row = exact_scientific.iloc[0]
-        else:
-            partial = df[
-                df["species_name"].str.contains(q, case=False, na=False)
-                | df["common_Name"].str.contains(q, case=False, na=False)
-            ]
-            if partial.empty:
-                return "", None, gr.update(visible=False), "No species found."
-            row = partial.iloc[0]
+    # Find ALL partial matches
+    matches = df[
+        df["species_name"].str.lower().str.contains(q, na=False)
+        | df["common_Name"].str.lower().str.contains(q, na=False)
+    ]
+
+    if matches.empty:
+        return gr.update(choices=[], value=None, visible=False), "", None, gr.update(visible=False), "No species found."
+
+    # Build dropdown list: "Common Name (Scientific Name)"
+    options = [
+        f"{row['common_Name']} ({row['species_name']})"
+        for _, row in matches.iterrows()
+    ]
+
+    return gr.update(choices=options, value=None, visible=True), "", None, gr.update(visible=False), "Select a species."
+
+species_dropdown = gr.Dropdown(
+    label="Matching species",
+    choices=[],
+    visible=False
+)
+    
+def load_species(selection):
+    if not selection:
+        return "", None, gr.update(visible=False), ""
+
+    # Extract scientific name from "Common Name (Scientific Name)"
+    sci_name = selection.split("(")[-1].replace(")", "").strip()
+
+    row = df[df["species_name"] == sci_name].iloc[0]
 
     score = row["zoonointel_score"]
     gauge = create_gauge(score)
 
-    name_md = f"## {row.get('common_Name', 'No common name')} ({row['species_name']})"
+    name_md = f"## {row['common_Name']} ({row['species_name']})"
 
     d1 = driver_name_map.get(row.get("top_driver_1", ""), row.get("top_driver_1", ""))
     d2 = driver_name_map.get(row.get("top_driver_2", ""), row.get("top_driver_2", ""))
@@ -292,11 +308,16 @@ with app:
     report_output = gr.Markdown()
 
     search_input.change(
-        fn=search_species,
-        inputs=search_input,
-        outputs=[name_output, gauge_output, gauge_group, report_output]
-    )
+    fn=search_species,
+    inputs=search_input,
+    outputs=[species_dropdown, name_output, gauge_output, gauge_group, report_output]
+)
 
+species_dropdown.change(
+    fn=load_species,
+    inputs=species_dropdown,
+    outputs=[name_output, gauge_output, gauge_group, report_output]
+)
     # TOP SCORING SPECIES TOGGLE BUTTON
     top_visible = gr.State(False)
     show_top_btn = gr.Button("Top Scoring Species")

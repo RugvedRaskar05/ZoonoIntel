@@ -318,25 +318,25 @@ species_dropdown.change(
     inputs=species_dropdown,
     outputs=[name_output, gauge_output, gauge_group, report_output]
 )
-    # TOP SCORING SPECIES TOGGLE BUTTON
+ # TOP SCORING SPECIES TOGGLE BUTTON
 top_visible = gr.State(False)
-    show_top_btn = gr.Button("Top Scoring Species")
+show_top_btn = gr.Button("Top Scoring Species")
 
-    top_section = gr.Group(visible=False)
-    with top_section:
-        gr.Markdown("## Top Scoring Species")
-        top_table = df.sort_values("zoonointel_score", ascending=False)
-        gr.Dataframe(top_table)
+top_section = gr.Group(visible=False)
+with top_section:
+    gr.Markdown("## Top Scoring Species")
+    top_table = df.sort_values("zoonointel_score", ascending=False)
+    gr.Dataframe(top_table)
 
-    def toggle_top(current):
-        new_state = not current
-        return new_state, gr.update(visible=new_state)
+def toggle_top(current):
+    new_state = not current
+    return new_state, gr.update(visible=new_state)
 
-    show_top_btn.click(
-        fn=toggle_top,
-        inputs=top_visible,
-        outputs=[top_visible, top_section]
-    )
+show_top_btn.click(
+    fn=toggle_top,
+    inputs=top_visible,
+    outputs=[top_visible, top_section]
+)
 
 
 app.launch(server_name="0.0.0.0", server_port=10000)

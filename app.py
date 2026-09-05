@@ -267,6 +267,11 @@ button:hover {
 
 app = gr.Blocks(css=custom_css)
 
+species_options = [
+    f"{row['common_Name']} ({row['species_name']})"
+    for _, row in df.iterrows()
+]
+
 with app:
 
     # PARTICLE BACKGROUND (must be first)
@@ -292,10 +297,14 @@ with app:
     </div>
     """)
 
-    search_input = gr.Textbox(
-        label="Search species name",
-        placeholder="Type species name…"
-    )
+    species_dropdown = gr.Dropdown(
+    label="Search species",
+    choices=species_options,
+    value=None,
+    allow_custom_value=False,
+    interactive=True
+)
+
 
     name_output = gr.Markdown()
 
@@ -304,12 +313,6 @@ with app:
         gauge_output = gr.Plot()
 
     report_output = gr.Markdown()
-
-    species_dropdown = gr.Dropdown(
-        label="Matching species",
-        choices=[],
-        visible=False
-    )
 
     # SEARCH HANDLERS
     search_input.change(

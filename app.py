@@ -323,12 +323,6 @@ species_dropdown = gr.Dropdown(
     visible=False
 )
 
-search_input.change(
-    fn=autocomplete_species,
-    inputs=search_input,
-    outputs=species_dropdown
-)
-
 species_dropdown.change(
     fn=load_species,
     inputs=species_dropdown,

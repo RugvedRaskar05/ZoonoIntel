@@ -312,30 +312,30 @@ with app:
     </div>
     """)
 
-search_input = gr.Textbox(
-    label="Search species",
-    placeholder="Type species name…"
-)
+    search_input = gr.Textbox(
+        label="Search species",
+        placeholder="Type species name…"
+    )
 
-species_dropdown = gr.Dropdown(
-    label="Select species",
-    choices=[],
-    visible=False
-)
+    species_dropdown = gr.Dropdown(
+        label="Select species",
+        choices=[],
+        visible=False
+    )
 
-species_dropdown.change(
-    fn=load_species,
-    inputs=species_dropdown,
-    outputs=[name_output, gauge_output, gauge_group, report_output]
-)
-
-name_output = gr.Markdown()
+    name_output = gr.Markdown()
 
     gauge_group = gr.Group(visible=False)
     with gauge_group:
         gauge_output = gr.Plot()
 
     report_output = gr.Markdown()
+
+    search_input.change(
+        fn=autocomplete_species,
+        inputs=search_input,
+        outputs=species_dropdown
+    )
 
     species_dropdown.change(
         fn=load_species,
@@ -362,5 +362,6 @@ name_output = gr.Markdown()
         inputs=top_visible,
         outputs=[top_visible, top_section]
     )
+
 
 app.launch(server_name="0.0.0.0", server_port=10000)

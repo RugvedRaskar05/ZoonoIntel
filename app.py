@@ -305,8 +305,6 @@ with app:
     with gauge_group:
         gauge_output = gr.Plot()
 
-    report_output = gr.Markdown()
-
     search_input.change(
     fn=search_species,
     inputs=search_input,
@@ -318,6 +316,9 @@ species_dropdown.change(
     inputs=species_dropdown,
     outputs=[name_output, gauge_output, gauge_group, report_output]
 )
+
+ report_output = gr.Markdown()
+
  # TOP SCORING SPECIES TOGGLE BUTTON
 top_visible = gr.State(False)
 show_top_btn = gr.Button("Top Scoring Species")

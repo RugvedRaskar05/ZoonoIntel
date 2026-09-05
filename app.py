@@ -319,7 +319,7 @@ species_dropdown.change(
     outputs=[name_output, gauge_output, gauge_group, report_output]
 )
     # TOP SCORING SPECIES TOGGLE BUTTON
-    top_visible = gr.State(False)
+top_visible = gr.State(False)
     show_top_btn = gr.Button("Top Scoring Species")
 
     top_section = gr.Group(visible=False)

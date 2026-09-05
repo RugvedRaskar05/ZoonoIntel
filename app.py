@@ -316,8 +316,7 @@ species_dropdown.change(
     inputs=species_dropdown,
     outputs=[name_output, gauge_output, gauge_group, report_output]
 )
-
- report_output = gr.Markdown()
+report_output = gr.Markdown()
 
  # TOP SCORING SPECIES TOGGLE BUTTON
 top_visible = gr.State(False)

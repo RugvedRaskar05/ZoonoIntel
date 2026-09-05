@@ -266,6 +266,27 @@ species_options = [
     for _, row in df.iterrows()
 ]
 
+def autocomplete_species(query):
+    if not query:
+        return gr.update(visible=False, choices=[])
+
+    q = query.lower().strip()
+
+    matches = df[
+        df["species_name"].str.lower().str.contains(q, na=False)
+        | df["common_Name"].str.lower().str.contains(q, na=False)
+    ]
+
+    if matches.empty:
+        return gr.update(visible=False, choices=[])
+
+    options = [
+        f"{row['common_Name']} ({row['species_name']})"
+        for _, row in matches.iterrows()
+    ]
+
+    return gr.update(visible=True, choices=options)
+
 with app:
 
     # PARTICLE BACKGROUND (must be first)
@@ -291,14 +312,28 @@ with app:
     </div>
     """)
 
-    species_dropdown = gr.Dropdown(
+search_input = gr.Textbox(
     label="Search species",
-    choices=species_options,
-    value=None,
-    allow_custom_value=False,
-    interactive=True
+    placeholder="Type species name…"
 )
 
+species_dropdown = gr.Dropdown(
+    label="Select species",
+    choices=[],
+    visible=False
+)
+
+search_input.change(
+    fn=autocomplete_species,
+    inputs=search_input,
+    outputs=species_dropdown
+)
+
+species_dropdown.change(
+    fn=load_species,
+    inputs=species_dropdown,
+    outputs=[name_output, gauge_output, gauge_group, report_output]
+)
 
     name_output = gr.Markdown()
 

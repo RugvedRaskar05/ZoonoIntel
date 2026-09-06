@@ -129,12 +129,6 @@ def load_species(selection):
 2. {d2}
 3. {d3}
 
-----
-
-## **Uncertainty Notes**
-{row.get('uncertainty_reason', 'None')}
-"""
-
     return name_md, gauge, gr.update(visible=True), report
 
 custom_css = """

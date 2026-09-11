@@ -95,12 +95,34 @@ species_dropdown = gr.Dropdown(
     
 def load_species(selection):
     if not selection:
-        return "", None, gr.update(visible=False), ""
+        return "", None, gr.update(visible=False), "", None
+
+    sci_name = selection.split("(")[-1].replace(")", "").strip()
+    row = df[df["species_name"] == sci_name].iloc[0]
+
+    score = row["zoonointel_score"]
+    gauge = create_gauge(score)
+
+    name_md = f"## {row['common_Name']} ({row['species_name']})"
+
+    # Fetch GBIF image
+    img_url = fetch_gbif_image(sci_name)
+
+    # Show image only if found
+    img_update = gr.update(value=img_url, visible=True) if img_url else gr.update(visible=False)
+
+    # Build report
+    ...
+
+    return name_md, img_update, gauge, gr.update(visible=True), report
+
 
     # Extract scientific name from "Common Name (Scientific Name)"
     sci_name = selection.split("(")[-1].replace(")", "").strip()
 
     row = df[df["species_name"] == sci_name].iloc[0]
+
+    image_output = gr.Image()
 
     score = row["zoonointel_score"]
     gauge = create_gauge(score)
@@ -281,7 +303,40 @@ def autocomplete_species(query):
 
     return gr.update(visible=True, choices=options)
 
+import requests
+
+def fetch_gbif_image(scientific_name):
+    url = "https://api.gbif.org/v1/occurrence/search"
+    params = {
+        "mediaType": "StillImage",
+        "scientificName": scientific_name,
+        "limit": 1
+    }
+
+    try:
+        r = requests.get(url, params=params, timeout=5)
+        data = r.json()
+
+        if "results" in data and len(data["results"]) > 0:
+            media = data["results"][0].get("media", [])
+            if media:
+                return media[0].get("identifier", None)
+    except:
+        pass
+
+    return None  # fallback if no image found
+
 with app:
+
+    species_dropdown.change(
+    fn=load_species,
+    inputs=species_dropdown,
+    outputs=[name_output, image_output, gauge_output, gauge_group, report_output]
+)
+
+
+    image_output = gr.Image(label="Species Image", visible=False)
+
 
     # PARTICLE BACKGROUND (must be first)
     gr.HTML(
